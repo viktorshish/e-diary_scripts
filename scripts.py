@@ -1,6 +1,7 @@
 import argparse
 import os
 import random
+import sys
 
 import django
 
@@ -13,8 +14,19 @@ from datacenter.models import Schoolkid, Lesson, Mark, Chastisement, Commendatio
 
 
 def get_schoolkid(child):
-    schoolkid = Schoolkid.objects.get(full_name__contains=child)
-    return schoolkid
+    if not child:
+        print('Имя ученика не указано')
+        sys.exit()
+    else:
+        try:
+            schoolkid = Schoolkid.objects.get(full_name__contains=child)
+            return schoolkid
+        except Schoolkid.DoesNotExist:
+            print('Ученик не найден в базе данных')
+            sys.exit()
+        except Schoolkid.MultipleObjectsReturned:
+            print('Найдено более одного ученика')
+            sys.exit()
 
 
 def fix_marks(schoolkid):
