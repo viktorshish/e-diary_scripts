@@ -15,17 +15,17 @@ from datacenter.models import Schoolkid, Lesson, Mark, Chastisement, Commendatio
 
 def get_schoolkid(child):
     if not child:
-        print('Имя ученика не указано.')
+        print('Имя ученика не указано')
         sys.exit()
     else:
         try:
             schoolkid = Schoolkid.objects.get(full_name__contains=child)
             return schoolkid
         except Schoolkid.DoesNotExist:
-            print('Ученик не найден в базе данных, введите коректное имя.')
+            print('Ученик не найден в базе данных')
             sys.exit()
         except Schoolkid.MultipleObjectsReturned:
-            print('Найдено более одного ученика, введите полное имя (ФИО).')
+            print('Найдено более одного ученика')
             sys.exit()
 
 
@@ -75,16 +75,19 @@ def create_commendation(schoolkid, lesson):
         'Теперь у тебя точно все получится!',
         ]
 
-    child_lessons = Lesson.objects.filter(
-        year_of_study=schoolkid.year_of_study,
-        group_letter=schoolkid.group_letter,
-        subject__title=lesson).last()
-    Commendation.objects.create(
-        text=random.choice(commendations),
-        created=child_lessons.date,
-        schoolkid=schoolkid,
-        subject=child_lessons.subject,
-        teacher=child_lessons.teacher)
+    try:
+        child_lessons = Lesson.objects.filter(
+            year_of_study=schoolkid.year_of_study,
+            group_letter=schoolkid.group_letter,
+            subject__title=lesson).last()
+        Commendation.objects.create(
+            text=random.choice(commendations),
+            created=child_lessons.date,
+            schoolkid=schoolkid,
+            subject=child_lessons.subject,
+            teacher=child_lessons.teacher)
+    except AttributeError:
+        print('Предмет не найден')
 
 
 def main():
