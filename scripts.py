@@ -87,12 +87,12 @@ def create_commendation(schoolkid, lesson):
             subject=child_lessons.subject,
             teacher=child_lessons.teacher)
     except AttributeError:
-        print('Предмет не найден')
+        print('Предмет указан некорректно, введите правильное название предмета.')
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Скрипты для электроноого дневника'
+        description='Скрипты для электронного дневника'
         )
     parser.add_argument(
         'script',
