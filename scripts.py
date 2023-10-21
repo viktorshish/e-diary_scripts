@@ -1,8 +1,9 @@
+import argparse
 import os
 import random
 
 import django
-import click
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
@@ -74,20 +75,24 @@ def create_commendation(schoolkid, lesson):
         teacher=child_lessons.teacher)
 
 
-@click.command
-@click.option('--correct_grades', '-cg', is_flag=True,
-              help='Correcting bad grades to "5".')
-@click.option('--delete_remarks', '-dr', is_flag=True, help='Delete remarks.')
-@click.option('--compliment', '-c', is_flag=True, help='Compliment.')
-@click.option('--lesson', '-l', help='Identify the subject.')
-@click.argument('name', required=True)
-def main(name, correct_grades, delete_remarks, compliment, lesson):
-    if correct_grades:
-        fix_marks(get_schoolkid(name))
-    elif delete_remarks:
-        remove_chastisements(get_schoolkid(name))
-    elif compliment:
-        create_commendation(get_schoolkid(name), lesson)
+def main():
+    parser = argparse.ArgumentParser(
+        description='Скрипты для электроноого дневника'
+        )
+    parser.add_argument(
+        'script',
+        help='Действие: fix_marks, remove_chastisements, create_commendation'
+        )
+    parser.add_argument('name', help='Имя ученика')
+    parser.add_argument('--lesson', help='Урок для похвалы')
+    args = parser.parse_args()
+
+    if args.script == 'fix_marks':
+        fix_marks(get_schoolkid(args.name))
+    elif args.script == 'remove_chastisements':
+        remove_chastisements(get_schoolkid(args.name))
+    elif args.script == 'create_commendation':
+        create_commendation(get_schoolkid(args.name), args.lesson)
 
 
 if __name__ == '__main__':
