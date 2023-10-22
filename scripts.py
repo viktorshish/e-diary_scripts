@@ -78,7 +78,7 @@ def create_commendation(schoolkid, lesson):
         child_lessons = Lesson.objects.filter(
             year_of_study=schoolkid.year_of_study,
             group_letter=schoolkid.group_letter,
-            subject__title=lesson).last()
+            subject__title=lesson).order_by('-date')[0]
         Commendation.objects.create(
             text=random.choice(COMMENDATIONS),
             created=child_lessons.date,
